@@ -48,13 +48,6 @@ def send_notification(message):
     except requests.exceptions.RequestException as e:
         print(f"Failed to send notification: {e}")
 
-#Test Notifications
-def user_input_thread():
-    while True:
-        user_input = input("Type 'test' to send a test notification: ")
-        if user_input.lower() == 'test':
-            send_notification("This is a test notification.")
-
 #Values Stocks
 stock_thresholds = {
     'TSLA': {'min': 180, 'max': 200},
@@ -64,11 +57,6 @@ stock_thresholds = {
     'INTC': {'min': 30, 'max': 40}
 }
 notification_interval = 60  #Seconds 
-
-#Test User
-thread = threading.Thread(target=user_input_thread)
-thread.daemon = True
-thread.start()
 
 #Program loop
 while True:
