@@ -23,6 +23,7 @@ def fetch_stock_price(symbol):
         data = response.json()
         if 'c' not in data:
             raise ValueError(f"No data found for {symbol}")
+        print(f"Fetched price for {symbol}: {data['c']}")
         return data['c']
     except Exception as e:
         print(f"Error fetching {symbol} price: {e}")
@@ -59,10 +60,10 @@ stock_thresholds = {
     'TSLA': {'min': 180, 'max': 200},
     'GME': {'min': 20, 'max': 40},
     'NVDA': {'min': 120, 'max': 140},
-    'ASML': {'min': 800, 'max': 1000},
+    'ASML': {'min': 1000, 'max': 1200},
     'INTC': {'min': 30, 'max': 40}
 }
-notification_interval = 60  # Seconds between price checks
+notification_interval = 60  #Seconds 
 
 #Test User
 thread = threading.Thread(target=user_input_thread)
@@ -73,8 +74,13 @@ thread.start()
 while True:
     for symbol, thresholds in stock_thresholds.items():
         price = fetch_stock_price(symbol)
-        if price is not None and check_price_range(price, thresholds['min'], thresholds['max']):
-            message = f"{symbol}: Price is now {price:.2f}, within the range ({thresholds['min']:.2f} - {thresholds['max']:.2f})!"
-            send_notification(message)
+        if price is not None:
+            print(f"{symbol} price: {price}")
+            if check_price_range(price, thresholds['min'], thresholds['max']):
+                message = f"{symbol}: Price is now {price:.2f}, within the range ({thresholds['min']:.2f} - {thresholds['max']:.2f})!"
+                print(f"Sending notification for {symbol}")
+                send_notification(message)
+            else:
+                print(f"{symbol} price {price} is out of range ({thresholds['min']} - {thresholds['max']})")
     
     time.sleep(notification_interval)
